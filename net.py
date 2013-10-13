@@ -1,17 +1,19 @@
 __author__ = 'suxor'
 import socket
 
+UDP = socket.SOCK_DGRAM
+TCP = socket.SOCK_STREAM
+
 
 class NetSender(object):
     _remoteserver = None
     _remoteport = None
     _soc = None
-    __proto = {'TCP':socket.SOCK_STREAM, 'UDP': socket.SOCK_DGRAM}
 
-    def __init__(self, server, port, proto='TCP'):
+    def __init__(self, server, port, proto=TCP):
         self._remoteport = port
         self._remoteserver = server
-        self._soc = socket.socket(socket.AF_INET, self.__proto[proto])
+        self._soc = socket.socket(socket.AF_INET, proto)
 
     def __enter__(self):
         self.connect()
@@ -38,3 +40,5 @@ class Graphite(NetSender):
 
     def send_data(self, path, value, timestamp):
         super(Graphite, self).send_data(("%s %s %s\n" % (path, value, timestamp)).encode())
+
+
