@@ -19,15 +19,15 @@ class NetSender(object):
         self.connect()
         return self
 
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_value, traceback):
         self.close()
 
     def connect(self):
         self._soc.connect((self._remoteserver, self._remoteport))
 
     def close(self):
-        self.__soc.shutdown(socket.SHUT_RDWR)
-        self.__soc.close()
+        self._soc.shutdown(socket.SHUT_RDWR)
+        self._soc.close()
 
     def send_data(self, data):
         self._soc.sendall(data)
@@ -36,7 +36,7 @@ class NetSender(object):
 class Graphite(NetSender):
 
     def __init__(self, server="127.0.0.1", port=2003):
-        super(Graphite, self).__init__(server, port, 'TCP')
+        super(Graphite, self).__init__(server, port, TCP)
 
     def send_data(self, path, value, timestamp):
         super(Graphite, self).send_data(("%s %s %s\n" % (path, value, timestamp)).encode())
